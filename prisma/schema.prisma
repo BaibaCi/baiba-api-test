@@ -1,0 +1,84 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  password  String
+
+  email String @unique
+  hash  String
+
+  firstName String?
+  lastName  String?
+  Posts     Post[]
+
+  @@map("users")
+}
+
+model Blog {
+  id        String   @id @default(uuid())
+  title     String
+  textBox   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+
+  //@id([title, authorId]) //can also reference IDs like this
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  rating    Float
+  createdAt DateTime
+  updatedAt DateTime
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  @@map("posts")
+}
+
+model IdeaBox {
+  id        String   @id @default(uuid())
+  title     String
+  textBox   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+}
+
+model WorkDesign {
+  id        String   @id @default(uuid())
+  title     String
+  textBox   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String
+}
+
+model Shop {
+  productId   String   @id @default(uuid())
+  title       String
+  description String
+  price       Float
+  isAvailable Boolean
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authorId    String
+}
+
+enum Role {
+  BASIC
+  ADMIN
+}
